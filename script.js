@@ -1,87 +1,108 @@
-// Navigation functionality
 document.getElementById('menu-toggle').addEventListener('click', () => {
-    const mobileMenu = document.getElementById('mobile-menu');
-    mobileMenu.classList.toggle('hidden');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    dropdownMenu.classList.toggle('hidden');
 });
 
 function showSection(section) {
     document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
     document.getElementById(section).classList.remove('hidden');
-    document.getElementById('mobile-menu').classList.add('hidden');
+    document.getElementById('dropdown-menu').classList.add('hidden');
+    window.scrollTo(0, 0); // Reset scroll to top
+
+    // Reset gallery to 'events' tab when showing gallery section
     if (section === 'gallery') {
         showGalleryTab('events');
     }
 
-    // Dynamic color changes
     const nav = document.querySelector('nav');
-    const mobileMenu = document.getElementById('mobile-menu');
+    const dropdownMenu = document.getElementById('dropdown-menu');
 
     const navColors = {
         home: 'bg-blue-600',
-        about: 'bg-purple-600',
-        gallery: 'bg-pink-600',
-        cv: 'bg-blue-900',
-        blog: 'bg-indigo-600',
-        contact: 'bg-teal-600'
+        gallery: 'bg-blue-600', // CHANGED THIS TO BLUE
+        cv: 'bg-blue-900'
     };
 
-    const mobileColors = {
-        home: 'bg-blue-500',
-        about: 'bg-purple-500',
-        gallery: 'bg-pink-500',
-        cv: 'bg-blue-800',
-        blog: 'bg-indigo-500',
-        contact: 'bg-teal-500'
-    };
+    // The logic below ensures 'bg-blue-600' is used in the CSS for the nav bar color
+    const navBarColorClass = navColors[section] || 'bg-blue-600';
+    nav.className = `p-4 fixed top-0 left-0 w-full z-20 shadow-lg ${navBarColorClass}`;
+    // You also need to adjust the dropdown menu background color dynamically
+    dropdownMenu.className = `hidden md:hidden ${navBarColorClass}`;
+
+    // Fix for nav not keeping all classes: need to set it properly.
+    // The original HTML uses 'shadow-2xl' but the JS uses 'shadow-lg'. I'll stick to shadow-lg for the JS logic for consistency.
+    nav.className = `bg-blue-600 p-4 fixed top-0 left-0 w-full z-20 shadow-lg`; 
+    // This forces the nav back to the main blue, as the original nav already uses 'bg-blue-600'.
+    // If you want the CV section to have 'bg-blue-900', you must include the full class list:
 
     nav.className = `p-4 fixed top-0 left-0 w-full z-20 shadow-lg ${navColors[section] || 'bg-blue-600'}`;
-    mobileMenu.className = `hidden md:hidden ${mobileColors[section] || 'bg-pink-500'}`;
+    dropdownMenu.className = `hidden md:hidden ${navColors[section] || 'bg-blue-600'}`;
 }
 
+function showGalleryTab(tab) {
+    document.querySelectorAll('.gallery-tab').forEach(t => t.classList.add('hidden'));
+    document.getElementById(tab).classList.remove('hidden');
+    
+    const activeBlue = 'bg-blue-900'; // Define a strong blue for active tab
+    const inactiveWhite = 'bg-white';
+    const inactiveTextBlue = 'text-blue-600';
 
-    document.addEventListener('DOMContentLoaded', async () => {
-    await loadViewCounts(); // Fetch and display all counts initially
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        // Remove old classes
+        btn.classList.remove('active', 'bg-blue-600', 'bg-pink-600', 'text-white', 'bg-gray-300', 'text-gray-800');
+        // Add inactive classes
+        btn.classList.add(inactiveWhite, inactiveTextBlue);
+    });
+    
+    const activeBtn = document.querySelector(`[data-tab="${tab}"]`);
+    activeBtn.classList.add('active');
+    
+    // Set active button's color to the desired blue
+    activeBtn.classList.remove(inactiveWhite, inactiveTextBlue);
+    activeBtn.classList.add(activeBlue, 'text-white');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
     showSection('home');
+    showGalleryTab('events'); // Initialize gallery to 'events' tab
+
     // Lightbox functionality
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
-    
-    // Add click event to all gallery images
+
     document.querySelectorAll('.gallery-item img').forEach(img => {
-img.addEventListener('click', async function() {
-    const imageId = this.getAttribute('data-views-id');
-    if (imageId) {
-        await updateViewCount(imageId); // Increment on click (view)
-        // Then update the display immediately for this image
-        const span = document.querySelector(`[data-views="${imageId}"]`);
-        if (span) {
-            const newCount = await getViewCount(imageId);
-            span.textContent = formatCount(newCount);
-        }
-    }
-    // Existing lightbox code...
-    const largeSrc = this.getAttribute('data-lightbox-src');
-    lightboxImg.src = largeSrc || this.src;
-    lightbox.classList.add('active');
-    document.body.style.overflow = 'hidden';
-});
+        img.addEventListener('click', function() {
+            const largeSrc = this.getAttribute('data-lightbox-src');
+            lightboxImg.src = largeSrc || this.src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
     });
-    
-    // Close lightbox when clicking on it
+
     lightbox.addEventListener('click', function(e) {
         if (e.target === lightbox || e.target === lightboxImg) {
             lightbox.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
+            document.body.style.overflow = '';
         }
     });
-    
-    // Close lightbox with Escape key
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && lightbox.classList.contains('active')) {
             lightbox.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
+            document.body.style.overflow = '';
         }
     });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const menuToggle = document.getElementById('menu-toggle');
+        if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('current-year').textContent = new Date().getFullYear();
 });
 
 document.querySelectorAll('[data-section]').forEach(link => {
@@ -92,68 +113,9 @@ document.querySelectorAll('[data-section]').forEach(link => {
     });
 });
 
-function showGalleryTab(tab) {
-    document.querySelectorAll('.gallery-tab').forEach(t => t.classList.add('hidden'));
-    document.getElementById(tab).classList.remove('hidden');
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('bg-pink-600', 'text-white');
-        btn.classList.add('bg-gray-300', 'text-gray-800');
-    });
-    document.querySelector(`[data-tab="${tab}"]`).classList.remove('bg-gray-300', 'text-gray-800');
-    document.querySelector(`[data-tab="${tab}"]`).classList.add('bg-pink-600', 'text-white');
-}
-
 document.querySelectorAll('.tab-button').forEach(button => {
     button.addEventListener('click', () => {
         const tab = button.getAttribute('data-tab');
         showGalleryTab(tab);
     });
 });
-
-
-
-
-// Helper to format counts (e.g., 1200 -> 1.2K)
-function formatCount(count) {
-    if (count >= 1000) {
-        return (count / 1000).toFixed(1) + 'K';
-    }
-    return count.toString();
-}
-
-// Fetch current count for an image
-async function getViewCount(imageId) {
-    try {
-        const response = await fetch(`/.netlify/functions/view-count?imageId=${imageId}`);
-        if (!response.ok) throw new Error('Fetch failed');
-        const data = await response.json();
-        return data.count;
-    } catch (error) {
-        console.error('Error fetching view count:', error);
-        return 0; // Fallback to 0 on error
-    }
-}
-
-// Increment count for an image
-async function updateViewCount(imageId) {
-    try {
-        const response = await fetch(`/.netlify/functions/view-count`, {
-            method: 'POST',
-            body: JSON.stringify({ imageId }),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) throw new Error('Update failed');
-    } catch (error) {
-        console.error('Error updating view count:', error);
-    }
-}
-
-// Load all view counts on page load or section show
-async function loadViewCounts() {
-    const viewsSpans = document.querySelectorAll('[data-views]');
-    for (const span of viewsSpans) {
-        const id = span.getAttribute('data-views');
-        const count = await getViewCount(id);
-        span.textContent = formatCount(count);
-    }
-}

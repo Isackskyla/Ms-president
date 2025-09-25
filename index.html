@@ -7,325 +7,171 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Base styles with new typography */
-        body { font-family: 'Poppins', sans-serif; }
-
-        /* Subtle Fade transition for sections */
-        .section { 
-            transition: opacity 0.5s ease-in-out; 
-            min-height: calc(100vh - 4rem); /* Adjusts for nav height */
-        }
-        .section.hidden { 
-            opacity: 0; 
-            pointer-events: none; /* Disables interaction when hidden */
-            position: absolute; /* Prevents hidden sections from taking up space */
-            width: 100%;
-            top: 4rem; /* Aligns with nav bar */
-        }
-        .section:not(.hidden) { opacity: 1; position: relative; }
-        
-        /* Lightbox for full-screen images */
-        .lightbox { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.9); /* Darker overlay for better focus */
-            z-index: 50; 
-            justify-content: center; 
-            align-items: center; 
-            cursor: zoom-out; /* Indicate it's clickable to close */
-        }
-        .lightbox img { 
-            max-width: 90%; 
-            max-height: 90%; 
-            object-fit: contain; 
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); /* Stronger shadow for lightbox image */
-            transform: scale(0.95); /* Initial slight scale down for animation */
-            opacity: 0;
-            animation: lightbox-fade-in 0.3s ease-out forwards;
-        }
-
-        @keyframes lightbox-fade-in {
-            to { 
-                transform: scale(1); 
-                opacity: 1;
-            }
-        }
-
-        .lightbox.active { display: flex; }
-        
-        /* Home background image */
-        #home { 
-            background-image: url('assets/home-bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-        }
-        
-        /* Overlay for readability */
-        #home .overlay {
-            background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay for better contrast */
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 0;
-        }
-        
-        #home .content {
-            position: relative;
-            z-index: 1;
-            padding-top: 5rem;
-        }
-
-        /* Card styles with elegant box shadow */
-        .card {
-            background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 8px 8px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Image styling - improved for natural flow and spacing */
-        .gallery-item {
-            display: flex;
-            flex-direction: column;
-            background: white; /* Give each item a white background like a photo */
-            border-radius: 0.75rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Lighter shadow for gallery items */
-            overflow: hidden; /* Ensures rounded corners on image within card */
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 200px; /* Fixed height for consistent gallery display */
-            object-fit: cover; /* Ensures images fill the space nicely */
-            cursor: zoom-in; /* Indicate it's clickable for full screen */
-            border-bottom: 1px solid #eee; /* Subtle separator from text */
-        }
-
-        .gallery-info {
-            padding: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.875rem; /* text-sm */
-            color: #4b5563; /* text-gray-600 */
-        }
-
-        /* Enhanced mobile menu styling */
-        #mobile-menu {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            max-width: 400px;
-            background: rgba(0, 0, 0, 0.95);
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 30;
-            padding: 1.5rem;
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.95);
-        }
-        #mobile-menu:not(.hidden) {
-            display: block;
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        #mobile-menu a {
-            position: relative;
-            padding: 1rem 1.5rem;
-            font-weight: 500;
-            color: white;
-            text-align: center;
-            transition: all 0.3s ease;
-            border-radius: 0.5rem;
-            margin: 0.5rem 0;
-        }
-        #mobile-menu a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: scale(1.05);
-        }
-    </style>
+    <link href="./styles.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans">
-    <nav class="bg-blue-600 p-4 fixed top-0 left-0 w-full z-20 shadow-lg">
+<body class="bg-white font-sans">
+    <nav class="bg-blue-600 p-4 fixed top-0 left-0 w-full z-20 shadow-2xl">
         <div class="container mx-auto flex justify-between items-center">
             <a href="#" class="text-2xl font-bold text-white">Ms. President</a>
             <button id="menu-toggle" class="md:hidden focus:outline-none">
                 <i class="fas fa-bars text-2xl text-white"></i>
             </button>
             <div id="menu" class="hidden md:flex md:space-x-6">
-                <a href="#" data-section="home" class="text-white hover:text-pink-200 transition duration-300 font-semibold">Home</a>
-                <a href="#" data-section="about" class="text-white hover:text-pink-200 transition duration-300 font-semibold">About</a>
-                <a href="#" data-section="gallery" class="text-white hover:text-pink-200 transition duration-300 font-semibold">Gallery</a>
-                <a href="#" data-section="cv" class="text-white hover:text-pink-200 transition duration-300 font-semibold">CV</a>
-                <a href="#" data-section="blog" class="text-white hover:text-pink-200 transition duration-300 font-semibold">Blog</a>
-                <a href="#" data-section="contact" class="text-white hover:text-pink-200 transition duration-300 font-semibold">Contact</a>
+                <a href="#" data-section="home" class="text-white hover:text-blue-400 transition duration-300 font-semibold">Home</a>
+                <a href="#" data-section="gallery" class="text-white hover:text-blue-400 transition duration-300 font-semibold">Gallery</a>
+                <a href="#" data-section="cv" class="text-white hover:text-blue-400 transition duration-300 font-semibold">CV</a>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden">
-            <a href="#" data-section="home" class="block py-2 px-4 hover:text-pink-200 transition duration-300">Home</a>
-            <a href="#" data-section="about" class="block py-2 px-4 hover:text-pink-200 transition duration-300">About</a>
-            <a href="#" data-section="gallery" class="block py-2 px-4 hover:text-pink-200 transition duration-300">Gallery</a>
-            <a href="#" data-section="cv" class="block py-2 px-4 hover:text-pink-200 transition duration-300">CV</a>
-            <a href="#" data-section="blog" class="block py-2 px-4 hover:text-pink-200 transition duration-300">Blog</a>
-            <a href="#" data-section="contact" class="block py-2 px-4 hover:text-pink-200 transition duration-300">Contact</a>
+        <div id="dropdown-menu" class="hidden md:hidden">
+            <a href="#" data-section="home" class="block text-white hover:text-blue-400">Home</a>
+            <a href="#" data-section="gallery" class="block text-white hover:text-blue-400">Gallery</a>
+            <a href="#" data-section="cv" class="block text-white hover:text-blue-400">CV</a>
         </div>
     </nav>
     <div class="relative">
-        <div id="home" class="hidden relative pt-20 section">
-            <div class="overlay"></div>
-            <div class="content px-4 py-8 flex flex-col justify-center items-center min-h-screen">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4 text-center text-white drop-shadow-lg">Welcome to Ms. President's Website!</h1>
+        <div id="home" class="relative section">
+            <div class="content px-4 py-8 flex flex-col justify-center items-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 text-center text-white drop-shadow-lg">
+                    Welcome to Ms. President's Website!
+                </h1>
                 <p class="text-lg mb-6 text-center text-white drop-shadow-lg">Teacher, Politics Enthusiast, and Leader.</p>
-                <img src="assets/photo1.jpg" alt="Profile" class="mx-auto rounded-full w-48 h-48 object-cover border-4 border-white shadow-2xl mb-8">
-                <div class="text-white drop-shadow-lg p-6 rounded-lg">
+                <img src="assets/school/photo1.jpg" alt="Profile" class="mx-auto rounded-full w-48 h-48 object-cover border-4 border-white shadow-2xl mb-8 profile-img">
+                <div class="text-white drop-shadow-lg p-6 rounded-lg intro-card">
                     <h1 class="text-3xl font-bold mb-4 text-left">Sophia Mosinya Oyweri</h1>
                     <p class="text-lg mb-6">Empowering students through education and inspiring civic engagement</p>
                 </div>
             </div>
         </div>
-        <div id="about" class="hidden relative bg-purple-100 pt-20 section">
-            <div class="px-4 py-8 card">
-                <h2 class="text-3xl font-bold mb-4 text-pink-600">About Me</h2>
-                <p class="mb-4">[Your sister's bio: e.g., Passionate teacher with 10 years of experience in history and civics, dedicated to inspiring students and engaging in political discourse.]</p>
-                <h3 class="text-2xl font-semibold mb-2">Teaching Philosophy</h3>
-                <p class="mb-4">[Her approach: e.g., Fostering critical thinking through open dialogue.]</p>
-                <h3 class="text-2xl font-semibold mb-2">Political Interests</h3>
-                <p>[E.g., Advocating for education policy and civic engagement.]</p>
-            </div>
-        </div>
-        <div id="gallery" class="hidden relative bg-pink-100 pt-20 section">
-            <div class="px-4 py-8">
-                <div class="flex space-x-2 mb-6">
-                    <button data-tab="events" class="tab-button bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition duration-300">Events</button>
-                    <button data-tab="school" class="tab-button bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition duration-300">School</button>
-                    <button data-tab="friends" class="tab-button bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition duration-300">Friends</button>
-                    <button data-tab="family" class="tab-button bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition duration-300">Family</button>
+        <div id="gallery" class="hidden relative section">
+            <div class="content px-4 py-8">
+                <h2 class="text-4xl font-bold mb-6 text-center text-white drop-shadow-lg">Gallery</h2>
+                <div class="flex space-x-2 mb-6 justify-center">
+                    <button data-tab="events" class="tab-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300 active">Events</button>
+                    <button data-tab="school" class="tab-button bg-white text-blue-600 px-4 py-2 rounded hover:bg-blue-700 hover:text-white transition duration-300">School</button>
+                    <button data-tab="friends" class="tab-button bg-white text-blue-600 px-4 py-2 rounded hover:bg-blue-700 hover:text-white transition duration-300">Friends</button>
+                    <button data-tab="family" class="tab-button bg-white text-blue-600 px-4 py-2 rounded hover:bg-blue-700 hover:text-white transition duration-300">Family</button>
                 </div>
-<div id="events" class="gallery-tab">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <div class="gallery-item">
-            <img src="assets/photo2.jpg" alt="Political Event 1" data-lightbox-src="assets/photo2.jpg" data-views-id="event1">
-            <div class="gallery-info">
-                <span><i class="fas fa-eye"></i> <span data-views="event1">0</span></span> <!-- Start at 0; JS will update -->
-            </div>
-        </div>
-        <div class="gallery-item">
-            <img src="assets/photo2.jpg" alt="Political Event 2" data-lightbox-src="assets/photo2.jpg" data-views-id="event2">
-            <div class="gallery-info">
-                <span><i class="fas fa-eye"></i> <span data-views="event2">0</span></span>
-            </div>
-        </div>
-        <!-- Repeat for event3, event4, event5 with data-views-id="event3" etc. -->
-    </div>
-</div>
-<div id="school" class="gallery-tab hidden">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <div class="gallery-item">
-            <img src="assets/photo1.jpg" alt="Classroom 1" data-lightbox-src="assets/school1-large.jpg" data-views-id="school1">
-            <div class="gallery-info">
-                <span><i class="fas fa-eye"></i> <span data-views="school1">0</span></span>
-            </div>
-        </div>
-        <!-- Add to others similarly -->
-    </div>
-</div>
-<!-- Do the same for #friends and #family tabs -->
+                <div id="events" class="gallery-tab">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div class="gallery-item">
+                            <img src="assets/events/photo1.jpg" alt="Political Event 1" data-lightbox-src="assets/events/photo1.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/events/photo2.jpg" alt="Political Event 2" data-lightbox-src="assets/events/photo2.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/events/photo3.jpg" alt="Political Event 3" data-lightbox-src="assets/events/photo3.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/events/photo4.jpg" alt="Political Event 4" data-lightbox-src="assets/events/photo4.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/events/photo5.jpg" alt="Political Event 5" data-lightbox-src="assets/events/photo5.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="school" class="gallery-tab hidden">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div class="gallery-item">
+                            <img src="assets/school/photo1.jpg" alt="Classroom 1" data-lightbox-src="assets/school/photo1.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/school/photo2.jpg" alt="Classroom 2" data-lightbox-src="assets/school/photo2.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/school/photo3.jpg" alt="Classroom 3" data-lightbox-src="assets/school/photo3.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/school/photo4.jpg" alt="Classroom 4" data-lightbox-src="assets/school/photo4.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/school/photo5.jpg" alt="Classroom 5" data-lightbox-src="assets/school/photo5.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                    </div>
+                </div>
                 <div id="friends" class="gallery-tab hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div class="gallery-item">
-                            <img src="assets/photo2.jpg" alt="Friends 1" data-lightbox-src="assets/friend1-large.jpg">
-                            <div class="gallery-info">
-                                <span><i class="fas fa-eye"></i> <span data-views="friend1">500</span></span>
-                            </div>
+                            <img src="assets/friends/photo1.jpg" alt="Friends 1" data-lightbox-src="assets/friends/photo1.jpg">
+                            <div class="gallery-info"></div>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/photo2.jpg" alt="Friends 2" data-lightbox-src="assets/friend2-large.jpg">
-                            <div class="gallery-info">
-                                <span><i class="fas fa-eye"></i> <span data-views="friend2">620</span></span>
-                            </div>
+                            <img src="assets/friends/photo2.jpg" alt="Friends 2" data-lightbox-src="assets/friends/photo2.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/friends/photo3.jpg" alt="Friends 3" data-lightbox-src="assets/friends/photo3.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/friends/photo4.jpg" alt="Friends 4" data-lightbox-src="assets/friends/photo4.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/friends/photo5.jpg" alt="Friends 5" data-lightbox-src="assets/friends/photo5.jpg">
+                            <div class="gallery-info"></div>
                         </div>
                     </div>
                 </div>
                 <div id="family" class="gallery-tab hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div class="gallery-item">
-                            <img src="assets/photo2.jpg" alt="Family 1" data-lightbox-src="assets/family1-large.jpg">
-                            <div class="gallery-info">
-                                <span><i class="fas fa-eye"></i> <span data-views="family1">600</span></span>
-                            </div>
+                            <img src="assets/family/photo1.jpg" alt="Family 1" data-lightbox-src="assets/family/photo1.jpg">
+                            <div class="gallery-info"></div>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/photo2.jpg" alt="Family 2" data-lightbox-src="assets/family2-large.jpg">
-                            <div class="gallery-info">
-                                <span><i class="fas fa-eye"></i> <span data-views="family2">580</span></span>
-                            </div>
+                            <img src="assets/family/photo2.jpg" alt="Family 2" data-lightbox-src="assets/family/photo2.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/family/photo3.jpg" alt="Family 3" data-lightbox-src="assets/family/photo3.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/family/photo4.jpg" alt="Family 4" data-lightbox-src="assets/family/photo4.jpg">
+                            <div class="gallery-info"></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="assets/family/photo5.jpg" alt="Family 5" data-lightbox-src="assets/family/photo5.jpg">
+                            <div class="gallery-info"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-<div id="cv" class="hidden relative bg-blue-900 pt-20 section text-white">
-    <div class="px-4 py-8 max-w-2xl mx-auto card">
-        <h2 class="text-3xl font-bold mb-4 text-center text-pink-600">Curriculum Vitae</h2>
-        
-        <div class="mb-8 flex justify-center">
-            <img src="assets/cv.jpg" alt="Curriculum Vitae Preview" class="rounded-lg shadow-xl border-4 border-gray-200">
-        </div>
-        
-        <div class="text-center">
-            <a href="assets/cv.jpg" class="inline-block bg-pink-600 text-white px-6 py-3 rounded-full hover:bg-pink-700 transition duration-300 font-semibold" download>
-                <i class="fas fa-download mr-2"></i> Download CV
-            </a>
-        </div>
-        
-    </div>
-</div>
-        <div id="blog" class="hidden relative bg-indigo-100 pt-20 section">
-            <div class="px-4 py-8">
-                <h2 class="text-3xl font-bold mb-4 text-pink-600">Blog & Insights</h2>
-                <article class="mb-6 p-6 card">
-                    <h3 class="text-2xl font-semibold mb-2">Politics in Education</h3>
-                    <p>[Write about her views on teaching civics or policy.]</p>
-                </article>
-            </div>
-        </div>
-        <div id="contact" class="hidden relative bg-black pt-20 section text-white">
-            <div class="px-4 py-8 card">
-                <h2 class="text-3xl font-bold mb-4 text-pink-600">Contact Me</h2>
-                <p class="mb-2">Email: [her@email.com]</p>
-                <p class="mb-2">Social: <a href="https://x.com/herhandle" class="text-pink-600 hover:underline">@herhandle</a></p>
-                <form action="https://formspree.io/f/your-id" method="POST" class="mt-4">
-                    <input type="text" name="name" placeholder="Your Name" class="w-full p-3 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-300">
-                    <input type="email" name="email" placeholder="Your Email" class="w-full p-3 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-300">
-                    <textarea name="message" placeholder="Your Message" class="w-full p-3 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-300 h-32"></textarea>
-                    <button type="submit" class="bg-pink-600 text-white px-6 py-3 rounded-md hover:bg-pink-700 transition duration-300">Send</button>
-                </form>
+        <div id="cv" class="hidden relative section">
+            <div class="content px-4 py-8">
+                <h2 class="text-4xl font-bold mb-6 text-center text-white drop-shadow-lg">Curriculum Vitae</h2>
+                <div class="mb-8 flex justify-center">
+                    <img src="assets/OyweriSophia_cv.jpg" alt="Curriculum Vitae Preview" class="rounded-lg shadow-xl border-4 border-white">
+                </div>
+                <div class="text-center">
+                    <a href="assets/OyweriSophia_cv.jpg" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition duration-300 font-semibold" download>
+                        <i class="fas fa-download mr-2"></i> Download CV
+                    </a>
+                </div>
             </div>
         </div>
     </div>
     <div id="lightbox" class="lightbox">
         <img id="lightbox-img" src="" alt="Full-screen image">
     </div>
+
+    <footer>
+        <p>&copy; <span id="current-year"></span> Sophia Mosinya Oyweri. All Rights Reserved.</p>
+        <p>Designed by <a href="#" target="_blank">Isack Skyla</a></p>
+    </footer>
+    
     <script src="script.js"></script>
 </body>
 </html>
