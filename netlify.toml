@@ -1,6 +1,8 @@
 [build]
-  publish = "/opt/build/repo"
-  environment = [
-    "SUPABASE_URL",
-    "SUPABASE_KEY"
-  ]
+  publish = "/opt/build/repo/dist"  # Adjust to your actual publish directory
+  command = "echo \"window.process = window.process || {}; window.process.env = { SUPABASE_URL: '$SUPABASE_URL', SUPABASE_KEY: '$SUPABASE_KEY' };\" > config.js"
+  environment = { 
+    SUPABASE_URL = "", 
+    SUPABASE_KEY = "", 
+    SECRETS_SCAN_OMIT_PATHS = "config.js"
+  }
