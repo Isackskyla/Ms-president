@@ -1,6 +1,5 @@
 [build]
-  publish = "/opt/build/repo"
-  environment = [
-    "SUPABASE_URL",
-    "SUPABASE_KEY"
-  ]
+  command = "echo \"window.process = window.process || {}; window.process.env = { SUPABASE_URL: '$SUPABASE_URL', SUPABASE_KEY: '$SUPABASE_KEY' };\" > config.js"
+  publish = "."
+
+
