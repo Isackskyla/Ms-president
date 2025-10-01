@@ -5,8 +5,8 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
 
 const { createClient } = supabase;
 const supabaseClient = createClient(
-    process.env.SUPABASE_URL || '',
-    process.env.SUPABASE_KEY || ''
+    process.env.SUPABASE_URL ,
+    process.env.SUPABASE_KEY
 );
 
 function debounce(func, wait) {
