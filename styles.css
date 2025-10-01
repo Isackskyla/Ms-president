@@ -1,350 +1,334 @@
-       /* General Body & Typography */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #FFFFFF;
-            color: #1E3A8A;
-        }
+    /* General Body & Typography */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #FFFFFF; /* Changed to pure white */
+        color: #1E3A8A; /* Dark blue for text */
+    }
 
-        /* Subtle Fade transition for sections */
-        .section {
-            transition: opacity 0.5s ease-in-out;
-            min-height: 100vh;
-            padding-top: 4rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    /* Subtle Fade transition for sections */
+    .section {
+        transition: opacity 0.5s ease-in-out;
+        min-height: 100vh;
+        padding-top: 4rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .section.hidden {
-            display: none;
-            opacity: 0;
-            pointer-events: none;
-        }
+    .section.hidden {
+        display: none;
+        opacity: 0;
+        pointer-events: none;
+    }
 
-        .section:not(.hidden) {
-            display: flex;
+    .section:not(.hidden) {
+        display: flex;
+        opacity: 1;
+        position: relative;
+    }
+
+    /* Lightbox styles */
+    .lightbox {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 50;
+        justify-content: center;
+        align-items: center;
+        cursor: zoom-out;
+    }
+
+    .lightbox img {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        transform: scale(0.95);
+        opacity: 0;
+        animation: lightbox-fade-in 0.3s ease-out forwards;
+    }
+
+    @keyframes lightbox-fade-in {
+        to {
+            transform: scale(1);
             opacity: 1;
-            position: relative;
         }
+    }
 
-        /* Lightbox styles */
-        .lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 50;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
-        }
+    .lightbox.active {
+        display: flex;
+    }
 
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            transform: scale(0.95);
+    /* Home Section */
+    #home {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/home-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: white;
+    }
+
+    #home .content {
+        position: relative;
+        z-index: 2;
+        padding: 2rem 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        max-width: 800px;
+    }
+
+    #home h1 {
+        font-size: 3.5rem;
+        line-height: 1.2;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        animation: slide-up 0.8s ease-out;
+    }
+
+    #home p {
+        font-size: 1.25rem;
+        font-weight: 400;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        animation: slide-up 1s ease-out;
+    }
+
+    @keyframes slide-up {
+        from {
             opacity: 0;
-            animation: lightbox-fade-in 0.3s ease-out forwards;
+            transform: translateY(20px);
         }
-
-        @keyframes lightbox-fade-in {
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
-        .lightbox.active {
-            display: flex;
+    #home .profile-img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease-in-out;
+        animation: fade-in 1.2s ease-out;
+    }
+
+    #home .profile-img:hover {
+        transform: scale(1.05);
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
         }
-
-        /* Home Section */
-        #home {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/home-bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: white;
+        to {
+            opacity: 1;
         }
+    }
 
-        #home .content {
-            position: relative;
-            z-index: 2;
-            padding: 2rem 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            max-width: 800px;
+    #home .intro-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-top: 2rem;
+        max-width: 600px;
+        width: 100%;
+        text-align: left;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: slide-up 1.4s ease-out;
+    }
+
+    #home .intro-card h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #60A5FA; /* Light blue for accent */
+        text-shadow: none;
+    }
+
+    #home .intro-card p {
+        font-size: 1rem;
+        color: #E5E7EB;
+        margin-bottom: 0;
+        text-shadow: none;
+    }
+
+    /* Gallery Section */
+    #gallery {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/gallery-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: white;
+    }
+
+    #gallery .content {
+        position: relative;
+        z-index: 2;
+        padding: 2rem 1rem;
+        max-width: 1200px;
+        width: 100%;
+    }
+
+    #gallery h2 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        animation: slide-up 0.8s ease-out;
+        text-align: center;
+    }
+
+    /* CV Section */
+    #cv {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/cv-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: white;
+    }
+
+    #cv .content {
+        position: relative;
+        z-index: 2;
+        padding: 2rem 1rem;
+        max-width: 800px;
+        width: 100%;
+        text-align: center;
+    }
+
+    #cv h2 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        animation: slide-up 0.8s ease-out;
+    }
+
+    /* Navigation & Button Styling */
+    nav {
+        background-color: #1E3A8A; /* Dark blue */
+        padding: 1rem 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Enhanced shadow for navigation */
+    }
+
+    nav a.text-white {
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: color 0.3s ease;
+    }
+
+    nav a.text-white:hover {
+        color: #60A5FA; /* Light blue on hover */
+    }
+
+    /* Card & Gallery Item Styling */
+    .card, .gallery-item {
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.03);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover, .gallery-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .tab-button {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .tab-button.active {
+        background-color: #1E3A8A; /* Dark blue for active tab */
+        color: white;
+    }
+
+    .tab-button:not(.active) {
+        background-color: white; /* White for inactive tabs */
+        color: #1E3A8A; /* Dark blue text */
+    }
+
+    .tab-button:hover {
+        background-color: #1E40AF; /* Slightly darker blue on hover */
+        color: white;
+    }
+
+    .bg-blue-600 { background-color: #1E3A8A; }
+    .hover\:bg-blue-700:hover { background-color: #1E40AF; }
+    .text-blue-600 { color: #1E3A8A; }
+    .bg-blue-900 { background-color: #1E3A8A; }
+
+    /* Footer styling */
+    footer {
+        background-color: #1E3A8A;
+        color: #E5E7EB;
+        padding: 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+    }
+
+    footer a {
+        color: #60A5FA;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+        color: #fff;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 767px) {
+        #home h1, #gallery h2, #cv h2 {
+            font-size: 2.5rem;
         }
-
-        #home h1 {
-            font-size: 3.5rem;
-            line-height: 1.2;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            animation: slide-up 0.8s ease-out;
-        }
-
         #home p {
-            font-size: 1.25rem;
-            font-weight: 400;
-            margin-bottom: 2rem;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            animation: slide-up 1s ease-out;
+            font-size: 1.1rem;
         }
+    }
 
-        @keyframes slide-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
-        #home .profile-img {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 5px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease-in-out;
-            animation: fade-in 1.2s ease-out;
-        }
+    /* Gallery Item Image Fix */
+.gallery-item {
+    /* Set the container to position: relative to allow for future absolute positioning (like overlays/captions) */
+    position: relative;
+    /* Optional: Hide image overflow if the image needs cropping (object-fit: cover) */
+    overflow: hidden; 
+    
+    /* ADD THIS: Set a responsive aspect ratio for a perfect square grid look */
+    /* This overrides the need for Tailwind's 'aspect-square' class if you don't want to use it everywhere. */
+    padding-top: 100%; /* Creates a 1:1 aspect ratio */
+    height: 0; /* Necessary for padding-top trick to work */
+}
 
-        #home .profile-img:hover {
-            transform: scale(1.05);
-        }
-
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        #home .intro-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-top: 2rem;
-            max-width: 600px;
-            width: 100%;
-            text-align: left;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            animation: slide-up 1.4s ease-out;
-        }
-
-        #home .intro-card h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #60A5FA;
-            text-shadow: none;
-        }
-
-        #home .intro-card p {
-            font-size: 1rem;
-            color: #E5E7EB;
-            margin-bottom: 0;
-            text-shadow: none;
-        }
-
-        /* Gallery Section */
-        #gallery {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/gallery-bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: white;
-        }
-
-        #gallery .content {
-            position: relative;
-            z-index: 2;
-            padding: 2rem 1rem;
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        #gallery h2 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            animation: slide-up 0.8s ease-out;
-            text-align: center;
-        }
-
-        /* CV Section */
-        #cv {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/cv-bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: white;
-        }
-
-        #cv .content {
-            position: relative;
-            z-index: 2;
-            padding: 2rem 1rem;
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-        }
-
-        #cv h2 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            animation: slide-up 0.8s ease-out;
-        }
-
-        /* Navigation & Button Styling */
-        nav {
-            background-color: #1E3A8A;
-            padding: 1rem 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        nav a.text-white {
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
-        }
-
-        nav a.text-white:hover {
-            color: #60A5FA;
-        }
-
-        /* Card & Gallery Item Styling */
-        .card, .gallery-item {
-            background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.03);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover, .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.06);
-        }
-
-        .tab-button {
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .tab-button.active {
-            background-color: #1E3A8A;
-            color: white;
-        }
-
-        .tab-button:not(.active) {
-            background-color: white;
-            color: #1E3A8A;
-        }
-
-        .tab-button:hover {
-            background-color: #1E40AF;
-            color: white;
-        }
-
-        .bg-blue-600 { background-color: #1E3A8A; }
-        .hover\:bg-blue-700:hover { background-color: #1E40AF; }
-        .text-blue-600 { color: #1E3A8A; }
-        .bg-blue-900 { background-color: #1E3A8A; }
-
-        /* Footer styling */
-        footer {
-            background-color: #1E3A8A;
-            color: #E5E7EB;
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.875rem;
-        }
-
-        footer a {
-            color: #60A5FA;
-            font-weight: 600;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        footer a:hover {
-            color: #fff;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 767px) {
-            #home h1, #gallery h2, #cv h2 {
-                font-size: 2.5rem;
-            }
-            #home p {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* Gallery Item Image Fix */
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            padding-top: 100%;
-            height: 0;
-        }
-
-        .gallery-item img {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* View Count Styles */
-        .view-count-display {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 0.25rem 0.5rem;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 0.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            z-index: 10;
-        }
-
-        .view-count-display i {
-            margin-right: 0.25rem;
-        }
-
-        .gallery-item:hover .view-count-display {
-            background-color: rgba(0, 0, 0, 0.8);
-            color: #60A5FA;
-        }
+.gallery-item img {
+    /* THE FIX: Removes the white gap caused by inline display */
+    display: block; 
+    
+    /* Make the image fill the space defined by the padding-top/height on the parent */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Ensures the image covers the entire area without distortion (may crop edges) */
+    object-fit: cover; 
+}
