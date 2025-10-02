@@ -5,10 +5,11 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
 
 const { createClient } = supabase;
 const supabaseClient = createClient(
-    process.env.SUPABASE_URL ,
-    process.env.SUPABASE_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
+// ... rest of the code remains unchanged ...
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
