@@ -3,13 +3,86 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
     dropdownMenu.classList.toggle('hidden');
 });
 
+const { createClient } = supabase;
+const supabaseClient = createClient(
+    'https://pqffootznndbljthwayl.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxZmZvb3R6bm5kYmxqdGh3YXlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyMjkyMjUsImV4cCI6MjA3NDgwNTIyNX0.qThWzc6d62ZvM9S3YWs1XIiXFrapsePKHhfEeC1r8kw'
+);
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+async function fetchViewCounts(tab) {
+    const imageIds = getImageIdsForTab(tab);
+    if (imageIds.length === 0) return;
+
+    const { data, error } = await supabaseClient
+        .from('image_views')
+        .select('image_id, view_count')
+        .in('image_id', imageIds);
+    
+    if (error) {
+        console.error('Error fetching view counts:', error);
+        return;
+    }
+
+    data.forEach(({ image_id, view_count }) => {
+        const element = document.querySelector(`.view-count-display[data-image-id="${image_id}"]`);
+        if (element) {
+            element.textContent = `👁️ ${view_count}`;
+        }
+    });
+}
+
+async function incrementAndUpdateViewCount(imageId) {
+    const { error } = await supabaseClient
+        .rpc('increment_view', { image_id_param: imageId });
+    
+    if (error) {
+        console.error('Error incrementing view count:', error);
+        return;
+    }
+
+    const { data, error: fetchError } = await supabaseClient
+        .from('image_views')
+        .select('view_count')
+        .eq('image_id', imageId)
+        .single();
+    
+    if (fetchError) {
+        console.error('Error fetching updated view count:', fetchError);
+        return;
+    }
+
+    const galleryViewCount = document.querySelector(`.view-count-display[data-image-id="${imageId}"]`);
+    if (galleryViewCount) {
+        galleryViewCount.textContent = `👁️ ${data.view_count}`;
+    }
+}
+
+const debouncedIncrementAndUpdateViewCount = debounce(incrementAndUpdateViewCount, 500);
+
+function getImageIdsForTab(tab) {
+    return Array.from(document.querySelectorAll(`#${tab} .gallery-item img`))
+        .map(img => img.getAttribute('data-image-id'))
+        .filter(id => id);
+}
+
 function showSection(section) {
     document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
     document.getElementById(section).classList.remove('hidden');
     document.getElementById('dropdown-menu').classList.add('hidden');
-    window.scrollTo(0, 0); // Reset scroll to top
+    window.scrollTo(0, 0);
 
-    // Reset gallery to 'events' tab when showing gallery section
     if (section === 'gallery') {
         showGalleryTab('events');
     }
@@ -19,63 +92,64 @@ function showSection(section) {
 
     const navColors = {
         home: 'bg-blue-600',
-        gallery: 'bg-blue-600', // CHANGED THIS TO BLUE
+        gallery: 'bg-blue-600',
         cv: 'bg-blue-900'
     };
 
-    // The logic below ensures 'bg-blue-600' is used in the CSS for the nav bar color
     const navBarColorClass = navColors[section] || 'bg-blue-600';
     nav.className = `p-4 fixed top-0 left-0 w-full z-20 shadow-lg ${navBarColorClass}`;
-    // You also need to adjust the dropdown menu background color dynamically
     dropdownMenu.className = `hidden md:hidden ${navBarColorClass}`;
-
-    // Fix for nav not keeping all classes: need to set it properly.
-    // The original HTML uses 'shadow-2xl' but the JS uses 'shadow-lg'. I'll stick to shadow-lg for the JS logic for consistency.
-    nav.className = `bg-blue-600 p-4 fixed top-0 left-0 w-full z-20 shadow-lg`; 
-    // This forces the nav back to the main blue, as the original nav already uses 'bg-blue-600'.
-    // If you want the CV section to have 'bg-blue-900', you must include the full class list:
-
-    nav.className = `p-4 fixed top-0 left-0 w-full z-20 shadow-lg ${navColors[section] || 'bg-blue-600'}`;
-    dropdownMenu.className = `hidden md:hidden ${navColors[section] || 'bg-blue-600'}`;
 }
 
 function showGalleryTab(tab) {
     document.querySelectorAll('.gallery-tab').forEach(t => t.classList.add('hidden'));
     document.getElementById(tab).classList.remove('hidden');
     
-    const activeBlue = 'bg-blue-900'; // Define a strong blue for active tab
+    const activeBlue = 'bg-blue-900';
     const inactiveWhite = 'bg-white';
     const inactiveTextBlue = 'text-blue-600';
 
     document.querySelectorAll('.tab-button').forEach(btn => {
-        // Remove old classes
         btn.classList.remove('active', 'bg-blue-600', 'bg-pink-600', 'text-white', 'bg-gray-300', 'text-gray-800');
-        // Add inactive classes
         btn.classList.add(inactiveWhite, inactiveTextBlue);
     });
     
     const activeBtn = document.querySelector(`[data-tab="${tab}"]`);
     activeBtn.classList.add('active');
-    
-    // Set active button's color to the desired blue
     activeBtn.classList.remove(inactiveWhite, inactiveTextBlue);
     activeBtn.classList.add(activeBlue, 'text-white');
+
+    fetchViewCounts(tab);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     showSection('home');
-    showGalleryTab('events'); // Initialize gallery to 'events' tab
+    showGalleryTab('events');
 
-    // Lightbox functionality
+    // Fetch initial view counts for the default 'events' tab
+    fetchViewCounts('events');
+
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
 
     document.querySelectorAll('.gallery-item img').forEach(img => {
         img.addEventListener('click', function() {
             const largeSrc = this.getAttribute('data-lightbox-src');
+            const imageId = this.getAttribute('data-image-id');
             lightboxImg.src = largeSrc || this.src;
             lightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
+
+            lightboxImg.onerror = () => {
+                console.error('Failed to load image:', largeSrc);
+                lightboxImg.src = 'assets/fallback.jpg';
+            };
+
+            if (imageId) {
+                debouncedIncrementAndUpdateViewCount(imageId);
+            } else {
+                console.error('Missing data-image-id for image:', largeSrc);
+            }
         });
     });
 
@@ -93,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
         const dropdownMenu = document.getElementById('dropdown-menu');
         const menuToggle = document.getElementById('menu-toggle');
