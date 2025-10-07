@@ -5,11 +5,10 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
 
 const { createClient } = supabase;
 const supabaseClient = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.SUPABASE_URL, // Use environment variable
+    process.env.SUPABASE_ANON_KEY // Use environment variable
 );
 
-// ... rest of the code remains unchanged ...
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -21,6 +20,7 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+
 
 async function fetchViewCounts(tab) {
     const imageIds = getImageIdsForTab(tab);
