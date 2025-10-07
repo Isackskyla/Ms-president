@@ -1,13 +1,18 @@
+import { createClient } from '@supabase/supabase-js'; // ⬅️ REQUIRED IMPORT
+
 document.getElementById('menu-toggle').addEventListener('click', () => {
     const dropdownMenu = document.getElementById('dropdown-menu');
     dropdownMenu.classList.toggle('hidden');
 });
 
-const { createClient } = supabase;
+// ----------------------------------------------------
+// ⚠️ FIX: Use import.meta.env and VITE_ prefix for frontend
+// ----------------------------------------------------
 const supabaseClient = createClient(
-    process.env.SUPABASE_URL, // Use environment variable
-    process.env.SUPABASE_ANON_KEY // Use environment variable
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY
 );
+// ----------------------------------------------------
 
 function debounce(func, wait) {
     let timeout;
@@ -20,7 +25,6 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
-
 
 async function fetchViewCounts(tab) {
     const imageIds = getImageIdsForTab(tab);
