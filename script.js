@@ -5,8 +5,8 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
 
 const { createClient } = supabase;
 const supabaseClient = createClient(
-    'https://pqffootznndbljthwayl.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxZmZvb3R6bm5kYmxqdGh3YXlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyMjkyMjUsImV4cCI6MjA3NDgwNTIyNX0.qThWzc6d62ZvM9S3YWs1XIiXFrapsePKHhfEeC1r8kw'
+    process.env.SUPABASE_URL, // Use environment variable
+    process.env.SUPABASE_ANON_KEY // Use environment variable
 );
 
 function debounce(func, wait) {
@@ -20,6 +20,7 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+
 
 async function fetchViewCounts(tab) {
     const imageIds = getImageIdsForTab(tab);
