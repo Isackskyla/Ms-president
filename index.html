@@ -8,6 +8,359 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="./styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* General Body & Typography */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFFFFF;
+            color: #1E3A8A;
+        }
+
+        /* Subtle Fade transition for sections */
+        .section {
+            transition: opacity 0.5s ease-in-out;
+            min-height: 100vh;
+            padding-top: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .section.hidden {
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .section:not(.hidden) {
+            display: flex;
+            opacity: 1;
+            position: relative;
+        }
+
+        /* Lightbox styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 50;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            opacity: 0;
+            animation: lightbox-fade-in 0.3s ease-out forwards;
+        }
+
+        @keyframes lightbox-fade-in {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        /* Home Section */
+        #home {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/home-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+        }
+
+        #home .content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-width: 800px;
+        }
+
+        #home h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            animation: slide-up 0.8s ease-out;
+        }
+
+        #home p {
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            animation: slide-up 1s ease-out;
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #home .profile-img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+            animation: fade-in 1.2s ease-out;
+        }
+
+        #home .profile-img:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #home .intro-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: slide-up 1.4s ease-out;
+        }
+
+        #home .intro-card h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #60A5FA;
+            text-shadow: none;
+        }
+
+        #home .intro-card p {
+            font-size: 1rem;
+            color: #E5E7EB;
+            margin-bottom: 0;
+            text-shadow: none;
+        }
+
+        /* Gallery Section */
+        #gallery {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/gallery-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+        }
+
+        #gallery .content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        #gallery h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            animation: slide-up 0.8s ease-out;
+            text-align: center;
+        }
+
+        /* CV Section */
+        #cv {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('assets/cv-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+        }
+
+        #cv .content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 1rem;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #cv h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            animation: slide-up 0.8s ease-out;
+        }
+
+        /* Navigation & Button Styling */
+        nav {
+            background-color: #1E3A8A;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        nav a.text-white {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        nav a.text-white:hover {
+            color: #60A5FA;
+        }
+
+        /* Card & Gallery Item Styling */
+        .card, .gallery-item {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover, .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .tab-button {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .tab-button.active {
+            background-color: #1E3A8A;
+            color: white;
+        }
+
+        .tab-button:not(.active) {
+            background-color: white;
+            color: #1E3A8A;
+        }
+
+        .tab-button:hover {
+            background-color: #1E40AF;
+            color: white;
+        }
+
+        .bg-blue-600 { background-color: #1E3A8A; }
+        .hover\:bg-blue-700:hover { background-color: #1E40AF; }
+        .text-blue-600 { color: #1E3A8A; }
+        .bg-blue-900 { background-color: #1E3A8A; }
+
+        /* Footer styling */
+        footer {
+            background-color: #1E3A8A;
+            color: #E5E7EB;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: #60A5FA;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 767px) {
+            #home h1, #gallery h2, #cv h2 {
+                font-size: 2.5rem;
+            }
+            #home p {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Gallery Item Image Fix */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            padding-top: 100%;
+            height: 0;
+        }
+
+        .gallery-item img {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* View Count Styles */
+        .view-count-display {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.5rem;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            z-index: 10;
+        }
+
+        .view-count-display i {
+            margin-right: 0.25rem;
+        }
+
+        .gallery-item:hover .view-count-display {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #60A5FA;
+        }
+    </style>
 </head>
 <body class="bg-white font-sans">
     <nav class="bg-blue-600 p-4 fixed top-0 left-0 w-full z-20 shadow-2xl">
@@ -54,163 +407,159 @@
                 <div id="events" class="gallery-tab">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div class="gallery-item">
-                            <img src="assets/events/photo1.jpg" alt="Political Event 1" data-lightbox-src="assets/events/photo1.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/events/photo1.jpg" alt="Political Event 1" data-lightbox-src="assets/events/photo1.jpg" data-image-id="events_photo1" loading="lazy">
+                            <span class="view-count-display" data-image-id="events_photo1">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/events/photo2.jpg" alt="Political Event 2" data-lightbox-src="assets/events/photo2.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/events/photo2.jpg" alt="Political Event 2" data-lightbox-src="assets/events/photo2.jpg" data-image-id="events_photo2" loading="lazy">
+                            <span class="view-count-display" data-image-id="events_photo2">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/events/photo3.jpg" alt="Political Event 3" data-lightbox-src="assets/events/photo3.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/events/photo3.jpg" alt="Political Event 3" data-lightbox-src="assets/events/photo3.jpg" data-image-id="events_photo3" loading="lazy">
+                            <span class="view-count-display" data-image-id="events_photo3">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/events/photo4.jpg" alt="Political Event 4" data-lightbox-src="assets/events/photo4.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/events/photo4.jpg" alt="Political Event 4" data-lightbox-src="assets/events/photo4.jpg" data-image-id="events_photo4" loading="lazy">
+                            <span class="view-count-display" data-image-id="events_photo4">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/events/photo5.jpg" alt="Political Event 5" data-lightbox-src="assets/events/photo5.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/events/photo5.jpg" alt="Political Event 5" data-lightbox-src="assets/events/photo5.jpg" data-image-id="events_photo5" loading="lazy">
+                            <span class="view-count-display" data-image-id="events_photo5">👁️ 0</span>
                         </div>
                     </div>
                 </div>
                 <div id="school" class="gallery-tab hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div class="gallery-item">
-                            <img src="assets/school/photo1.jpg" alt="Classroom 1" data-lightbox-src="assets/school/photo1.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/school/photo1.jpg" alt="Classroom 1" data-lightbox-src="assets/school/photo1.jpg" data-image-id="school_photo1" loading="lazy">
+                            <span class="view-count-display" data-image-id="school_photo1">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/school/photo2.jpg" alt="Classroom 2" data-lightbox-src="assets/school/photo2.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/school/photo2.jpg" alt="Classroom 2" data-lightbox-src="assets/school/photo2.jpg" data-image-id="school_photo2" loading="lazy">
+                            <span class="view-count-display" data-image-id="school_photo2">👁️ 0</span>
                         </div>
-
                     </div>
                 </div>
                 <div id="friends" class="gallery-tab hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div class="gallery-item">
-                            <img src="assets/friends/photo1.jpg" alt="Friends 1" data-lightbox-src="assets/friends/photo1.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/friends/photo1.jpg" alt="Friends 1" data-lightbox-src="assets/friends/photo1.jpg" data-image-id="friends_photo1" loading="lazy">
+                            <span class="view-count-display" data-image-id="friends_photo1">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/friends/photo2.jpg" alt="Friends 2" data-lightbox-src="assets/friends/photo2.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/friends/photo2.jpg" alt="Friends 2" data-lightbox-src="assets/friends/photo2.jpg" data-image-id="friends_photo2" loading="lazy">
+                            <span class="view-count-display" data-image-id="friends_photo2">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/friends/photo3.jpg" alt="Friends 3" data-lightbox-src="assets/friends/photo3.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/friends/photo3.jpg" alt="Friends 3" data-lightbox-src="assets/friends/photo3.jpg" data-image-id="friends_photo3" loading="lazy">
+                            <span class="view-count-display" data-image-id="friends_photo3">👁️ 0</span>
                         </div>
-
                     </div>
                 </div>
-
-                                <div id="family" class="gallery-tab hidden">
+                <div id="family" class="gallery-tab hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div class="gallery-item">
-                            <img src="assets/family/photo1.jpg" alt="Family 1" data-lightbox-src="assets/family/photo1.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo1.jpg" alt="Family 1" data-lightbox-src="assets/family/photo1.jpg" data-image-id="family_photo1" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo1">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo2.jpg" alt="Family 2" data-lightbox-src="assets/family/photo2.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo2.jpg" alt="Family 2" data-lightbox-src="assets/family/photo2.jpg" data-image-id="family_photo2" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo2">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo3.jpg" alt="Family 3" data-lightbox-src="assets/family/photo3.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo3.jpg" alt="Family 3" data-lightbox-src="assets/family/photo3.jpg" data-image-id="family_photo3" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo3">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo4.jpg" alt="Family 4" data-lightbox-src="assets/family/photo4.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo4.jpg" alt="Family 4" data-lightbox-src="assets/family/photo4.jpg" data-image-id="family_photo4" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo4">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo5.jpg" alt="Family 5" data-lightbox-src="assets/family/photo5.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo5.jpg" alt="Family 5" data-lightbox-src="assets/family/photo5.jpg" data-image-id="family_photo5" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo5">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo6.jpg" alt="Family 6" data-lightbox-src="assets/family/photo6.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo6.jpg" alt="Family 6" data-lightbox-src="assets/family/photo6.jpg" data-image-id="family_photo6" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo6">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo7.jpg" alt="Family 7" data-lightbox-src="assets/family/photo7.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo7.jpg" alt="Family 7" data-lightbox-src="assets/family/photo7.jpg" data-image-id="family_photo7" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo7">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo8.jpg" alt="Family 8" data-lightbox-src="assets/family/photo8.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo8.jpg" alt="Family 8" data-lightbox-src="assets/family/photo8.jpg" data-image-id="family_photo8" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo8">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo9.jpg" alt="Family 9" data-lightbox-src="assets/family/photo9.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo9.jpg" alt="Family 9" data-lightbox-src="assets/family/photo9.jpg" data-image-id="family_photo9" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo9">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo10.jpg" alt="Family 10" data-lightbox-src="assets/family/photo10.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo10.jpg" alt="Family 10" data-lightbox-src="assets/family/photo10.jpg" data-image-id="family_photo10" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo10">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo11.jpg" alt="Family 11" data-lightbox-src="assets/family/photo11.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo11.jpg" alt="Family 11" data-lightbox-src="assets/family/photo11.jpg" data-image-id="family_photo11" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo11">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo12.jpg" alt="Family 12" data-lightbox-src="assets/family/photo12.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo12.jpg" alt="Family 12" data-lightbox-src="assets/family/photo12.jpg" data-image-id="family_photo12" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo12">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo13.jpg" alt="Family 13" data-lightbox-src="assets/family/photo13.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo13.jpg" alt="Family 13" data-lightbox-src="assets/family/photo13.jpg" data-image-id="family_photo13" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo13">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo14.jpg" alt="Family 14" data-lightbox-src="assets/family/photo14.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo14.jpg" alt="Family 14" data-lightbox-src="assets/family/photo14.jpg" data-image-id="family_photo14" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo14">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo15.jpg" alt="Family 15" data-lightbox-src="assets/family/photo15.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo15.jpg" alt="Family 15" data-lightbox-src="assets/family/photo15.jpg" data-image-id="family_photo15" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo15">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo16.jpg" alt="Family 16" data-lightbox-src="assets/family/photo16.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo16.jpg" alt="Family 16" data-lightbox-src="assets/family/photo16.jpg" data-image-id="family_photo16" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo16">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo17.jpg" alt="Family 17" data-lightbox-src="assets/family/photo17.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo17.jpg" alt="Family 17" data-lightbox-src="assets/family/photo17.jpg" data-image-id="family_photo17" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo17">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo18.jpg" alt="Family 18" data-lightbox-src="assets/family/photo18.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo18.jpg" alt="Family 18" data-lightbox-src="assets/family/photo18.jpg" data-image-id="family_photo18" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo18">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo19.jpg" alt="Family 19" data-lightbox-src="assets/family/photo19.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo19.jpg" alt="Family 19" data-lightbox-src="assets/family/photo19.jpg" data-image-id="family_photo19" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo19">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo20.jpg" alt="Family 20" data-lightbox-src="assets/family/photo20.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo20.jpg" alt="Family 20" data-lightbox-src="assets/family/photo20.jpg" data-image-id="family_photo20" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo20">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo21.jpg" alt="Family 21" data-lightbox-src="assets/family/photo21.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo21.jpg" alt="Family 21" data-lightbox-src="assets/family/photo21.jpg" data-image-id="family_photo21" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo21">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo22.jpg" alt="Family 22" data-lightbox-src="assets/family/photo22.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo22.jpg" alt="Family 22" data-lightbox-src="assets/family/photo22.jpg" data-image-id="family_photo22" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo22">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo23.jpg" alt="Family 23" data-lightbox-src="assets/family/photo23.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo23.jpg" alt="Family 23" data-lightbox-src="assets/family/photo23.jpg" data-image-id="family_photo23" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo23">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo24.jpg" alt="Family 24" data-lightbox-src="assets/family/photo24.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo24.jpg" alt="Family 24" data-lightbox-src="assets/family/photo24.jpg" data-image-id="family_photo24" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo24">👁️ 0</span>
                         </div>
                         <div class="gallery-item">
-                            <img src="assets/family/photo25.jpg" alt="Family 25" data-lightbox-src="assets/family/photo25.jpg">
-                            <div class="gallery-info"></div>
+                            <img src="assets/family/photo25.jpg" alt="Family 25" data-lightbox-src="assets/family/photo25.jpg" data-image-id="family_photo25" loading="lazy">
+                            <span class="view-count-display" data-image-id="family_photo25">👁️ 0</span>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <div id="cv" class="hidden relative section">
@@ -235,7 +584,6 @@
         <p>&copy; <span id="current-year"></span> Sophia Mosinya Oyweri. All Rights Reserved.</p>
         <p>Designed by <a href="#" target="_blank">Isack Skyla</a></p>
     </footer>
-    
     <script src="script.js"></script>
 </body>
 </html>

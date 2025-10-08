@@ -1,19 +1,13 @@
-import { createClient } from '@supabase/supabase-js'; // ⬅️ REQUIRED IMPORT
-
 document.getElementById('menu-toggle').addEventListener('click', () => {
     const dropdownMenu = document.getElementById('dropdown-menu');
     dropdownMenu.classList.toggle('hidden');
 });
 
-// ----------------------------------------------------
-// ⚠️ FIX: Use import.meta.env and VITE_ prefix for frontend
-// ----------------------------------------------------
+const { createClient } = supabase;
 const supabaseClient = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
+    'https://pqffootznndbljthwayl.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxZmZvb3R6bm5kYmxqdGh3YXlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyMjkyMjUsImV4cCI6MjA3NDgwNTIyNX0.qThWzc6d62ZvM9S3YWs1XIiXFrapsePKHhfEeC1r8kw'
 );
-// ----------------------------------------------------
-
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -25,6 +19,7 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+
 
 async function fetchViewCounts(tab) {
     const imageIds = getImageIdsForTab(tab);
