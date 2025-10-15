@@ -350,36 +350,36 @@
         }
 
 
-        /* --- Social Links Styling --- */
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem; /* Space between icons */
-    margin-top: 2.5rem; /* Extra space below the intro card */
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    animation: fade-in 1.6s ease-out; /* Match the other animations */
-}
+                    /* --- Social Links Styling --- */
+            .social-links {
+                display: flex;
+                justify-content: center;
+                gap: 1.5rem; /* Space between icons */
+                margin-top: 2.5rem; /* Extra space below the intro card */
+                padding: 1rem;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                animation: fade-in 1.6s ease-out; /* Match the other animations */
+            }
 
-.social-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 1.25rem;
-    text-decoration: none;
-    transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
-}
+            .social-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                font-size: 1.25rem;
+                text-decoration: none;
+                transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
+            }
 
-.social-icon:hover {
-    background-color: #60A5FA; /* Light Blue on hover */
-    color: #1E3A8A; /* Dark Blue for the icon */
-    transform: scale(1.15) rotate(5deg);
-    box-shadow: 0 0 15px rgba(96, 165, 250, 0.8);
-}
+            .social-icon:hover {
+                background-color: #60A5FA; /* Light Blue on hover */
+                color: #1E3A8A; /* Dark Blue for the icon */
+                transform: scale(1.15) rotate(5deg);
+                box-shadow: 0 0 15px rgba(96, 165, 250, 0.8);
+            }
